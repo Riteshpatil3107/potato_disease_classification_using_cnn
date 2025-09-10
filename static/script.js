@@ -139,7 +139,7 @@ async function predictDisease() {
 }
 
 function displayResults(result) {
-    const { prediction, confidence, all_predictions } = result;
+    const { prediction, confidence } = result;
     
     // Display the uploaded image in results (notebook style)
     const resultImage = document.getElementById('resultImage');
@@ -152,48 +152,6 @@ function displayResults(result) {
     // Update main prediction text (notebook format)
     document.getElementById('predictedDisease').textContent = `'${formatDiseaseName(prediction)}'`;
     document.getElementById('confidenceText').textContent = `${confidence.toFixed(2)}%`;
-    
-    // Update detailed results - show ALL classes
-    const resultsGrid = document.getElementById('resultsGrid');
-    resultsGrid.innerHTML = '';
-    
-    // Define all possible classes in order - must match the model's class order
-    const allClasses = [
-        'Potato___Early_blight',
-        'Potato___Late_blight', 
-        'Potato___healthy'
-    ];
-    
-    // Create results for all classes, even if they have 0% confidence
-    allClasses.forEach(disease => {
-        const percentage = all_predictions[disease] || 0;
-        
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-        
-        // Add confidence level class
-        if (percentage >= 70) {
-            resultItem.classList.add('high-confidence');
-        } else if (percentage >= 40) {
-            resultItem.classList.add('medium-confidence');
-        } else {
-            resultItem.classList.add('low-confidence');
-        }
-        
-        // Add icon for each disease type
-        const diseaseIcon = getDiseaseIcon(disease);
-        const diseaseColor = getDiseaseColor(disease);
-        
-        resultItem.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="color: ${diseaseColor}; font-size: 1.2rem;">${diseaseIcon}</span>
-                <span class="result-label">${formatDiseaseName(disease)}</span>
-            </div>
-            <span class="result-percentage">${percentage.toFixed(1)}%</span>
-        `;
-        
-        resultsGrid.appendChild(resultItem);
-    });
     
     // Show results section with animation
     resultsSection.style.display = 'block';
